@@ -10,6 +10,6 @@ namespace task_management.Models
         [Required]
         public string Name { get; set; } = "";
         public string? Description { get; set; }
-        [JsonIgnore] public virtual List<Task> Tasks { get; set; }
+        [JsonIgnore] public virtual List<MyTask> MyTasks { get; set; }
     }
 }

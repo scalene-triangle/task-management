@@ -9,24 +9,15 @@ namespace task_management.Models
         [Required]
         public string Name { get; set; } = "";
 
-        [RegularExpression("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")]
+        //[RegularExpression("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")]
         [StringLength(7)]
         [Required]
         public string Color { get; set; } = "#1c83a5";
 
+        [Range(1, int.MaxValue, ErrorMessage = "Order must be at least 1.")]
         [Required]
         public int Order { get; set; }
 
-        [Required]
-        public Process Process { get; set; } = Process.Todo;
-        [JsonIgnore] public virtual List<Task> Tasks { get; set; }
-    }
-
-    public enum Process
-    {
-        Todo,
-        InProgress,
-        Done,
-        OnHold,
+        [JsonIgnore] public virtual List<MyTask> MyTasks { get; set; } = new List<MyTask>();
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace task_management.Models
 {
-    public class Task: GenericRecord
+    public class MyTask: GenericRecord
     {
         [StringLength(60, MinimumLength = 1)]
         [Required]
@@ -17,7 +17,7 @@ namespace task_management.Models
         [Range(0, 24, ErrorMessage = "Value must be between 0 and 24.")]
         public decimal estimate { get; set; } = 0;
 
-        [Required] public int? ProjectId { get; set; }
+        public int? ProjectId { get; set; }
         [ForeignKey("ProjectId")] public virtual Project? Project { get; set; }
 
         [Required] public int StoryId { get; set; }

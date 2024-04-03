@@ -10,94 +10,97 @@ using task_management.Models;
 
 namespace task_management.Controllers
 {
-    public class TasksController : Controller
+    public class StoriesController : Controller
     {
         private readonly AppDbContext _context;
 
-        public TasksController(AppDbContext context)
+        public StoriesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: Tasks
+        // GET: Stories
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Task.Include(t => t.Project).Include(t => t.Story);
-            return View(await appDbContext.ToListAsync());
+              return _context.Story != null ? 
+                          View(await _context.Story.ToListAsync()) :
+                          Problem("Entity set 'AppDbContext.Story'  is null.");
         }
 
-        // GET: Tasks/Details/5
+        // GET: Stories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Task == null)
+            if (id == null || _context.Story == null)
             {
                 return NotFound();
             }
 
-            var task = await _context.Task
-                .Include(t => t.Project)
-                .Include(t => t.Story)
+            var story = await _context.Story
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (task == null)
+            if (story == null)
             {
                 return NotFound();
             }
 
-            return View(task);
+            return View(story);
         }
 
-        // GET: Tasks/Create
+        // GET: Stories/Create
         public IActionResult Create()
         {
-            ViewData["ProjectId"] = new SelectList(_context.Set<Project>(), "Id", "Name");
-            ViewData["StoryId"] = new SelectList(_context.Set<Story>(), "Id", "Color");
             return View();
         }
 
-        // POST: Tasks/Create
+        // POST: Stories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,DueDate,estimate,ProjectId,StoryId,Id,CreatedAt,UpdatedAt")] Task task)
+        public async Task<IActionResult> Create([Bind("Name,Color,Order")] Story story)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(task);
+                _context.Add(story);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProjectId"] = new SelectList(_context.Set<Project>(), "Id", "Name", task.ProjectId);
-            ViewData["StoryId"] = new SelectList(_context.Set<Story>(), "Id", "Color", task.StoryId);
-            return View(task);
+
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+            }
+
+            return View(story);
         }
 
-        // GET: Tasks/Edit/5
+        // GET: Stories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Task == null)
+            if (id == null || _context.Story == null)
             {
                 return NotFound();
             }
 
-            var task = await _context.Task.FindAsync(id);
-            if (task == null)
+            var story = await _context.Story.FindAsync(id);
+            if (story == null)
             {
                 return NotFound();
             }
-            ViewData["ProjectId"] = new SelectList(_context.Set<Project>(), "Id", "Name", task.ProjectId);
-            ViewData["StoryId"] = new SelectList(_context.Set<Story>(), "Id", "Color", task.StoryId);
-            return View(task);
+            return View(story);
         }
 
-        // POST: Tasks/Edit/5
+        // POST: Stories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Title,Description,DueDate,estimate,ProjectId,StoryId,Id,CreatedAt,UpdatedAt")] Task task)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Color,Order,Id")] Story story)
         {
-            if (id != task.Id)
+            if (id != story.Id)
             {
                 return NotFound();
             }
@@ -106,12 +109,12 @@ namespace task_management.Controllers
             {
                 try
                 {
-                    _context.Update(task);
+                    _context.Update(story);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TaskExists(task.Id))
+                    if (!StoryExists(story.Id))
                     {
                         return NotFound();
                     }
@@ -122,53 +125,49 @@ namespace task_management.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProjectId"] = new SelectList(_context.Set<Project>(), "Id", "Name", task.ProjectId);
-            ViewData["StoryId"] = new SelectList(_context.Set<Story>(), "Id", "Color", task.StoryId);
-            return View(task);
+            return View(story);
         }
 
-        // GET: Tasks/Delete/5
+        // GET: Stories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Task == null)
+            if (id == null || _context.Story == null)
             {
                 return NotFound();
             }
 
-            var task = await _context.Task
-                .Include(t => t.Project)
-                .Include(t => t.Story)
+            var story = await _context.Story
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (task == null)
+            if (story == null)
             {
                 return NotFound();
             }
 
-            return View(task);
+            return View(story);
         }
 
-        // POST: Tasks/Delete/5
+        // POST: Stories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Task == null)
+            if (_context.Story == null)
             {
-                return Problem("Entity set 'AppDbContext.Task'  is null.");
+                return Problem("Entity set 'AppDbContext.Story'  is null.");
             }
-            var task = await _context.Task.FindAsync(id);
-            if (task != null)
+            var story = await _context.Story.FindAsync(id);
+            if (story != null)
             {
-                _context.Task.Remove(task);
+                _context.Story.Remove(story);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TaskExists(int id)
+        private bool StoryExists(int id)
         {
-          return (_context.Task?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Story?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
