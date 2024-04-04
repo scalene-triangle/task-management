@@ -17,9 +17,11 @@ namespace task_management.Models
         [Range(0, 24, ErrorMessage = "Value must be between 0 and 24.")]
         public decimal estimate { get; set; } = 0;
 
+        [Display(Name = "Project")]
         public int? ProjectId { get; set; }
         [ForeignKey("ProjectId")] public virtual Project? Project { get; set; }
 
+        [Display(Name = "Story")]
         [Required] public int StoryId { get; set; }
         [ForeignKey("StoryId")] public virtual Story Story { get; set; }
     }

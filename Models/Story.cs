@@ -9,7 +9,7 @@ namespace task_management.Models
         [Required]
         public string Name { get; set; } = "";
 
-        //[RegularExpression("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")]
+        [RegularExpression("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")]
         [StringLength(7)]
         [Required]
         public string Color { get; set; } = "#1c83a5";

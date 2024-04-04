@@ -48,5 +48,7 @@ namespace task_management.Data
         public DbSet<task_management.Models.MyTask> Task { get; set; } = default!;
 
         public DbSet<task_management.Models.Story> Story { get; set; } = default!;
+
+        public DbSet<task_management.Models.Project> Project { get; set; } = default!;
     }
 }
