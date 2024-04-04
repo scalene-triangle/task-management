@@ -15,7 +15,7 @@ namespace task_management.Models
         public DateTime DueDate { get; set; }
 
         [Range(0, 24, ErrorMessage = "Value must be between 0 and 24.")]
-        public decimal estimate { get; set; } = 0;
+        public decimal Estimate { get; set; } = 0;
 
         [Display(Name = "Project")]
         public int? ProjectId { get; set; }

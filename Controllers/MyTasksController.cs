@@ -5,17 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using task_management.Data;
+using task_management.DTOs.MyTasks;
 using task_management.Models;
+using task_management.Services;
 
 namespace task_management.Controllers
 {
     public class MyTasksController : Controller
     {
+        private readonly IMyTaskService _taskService;
         private readonly AppDbContext _context;
 
-        public MyTasksController(AppDbContext context)
+        public MyTasksController(AppDbContext context, IMyTaskService taskService)
         {
             _context = context;
+            _taskService = taskService;
         }
 
         // GET: MyTasks
@@ -59,12 +63,11 @@ namespace task_management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,DueDate,estimate,ProjectId,StoryId,Id")] MyTask task)
+        public async Task<IActionResult> Create(CreateMyTaskDto task)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(task);
-                await _context.SaveChangesAsync();
+                await _taskService.CreateTask(task);
                 return RedirectToAction(nameof(Index));
             }
 
