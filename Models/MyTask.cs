@@ -14,6 +14,7 @@ namespace task_management.Models
         [DataType(DataType.Date)]
         public DateTime DueDate { get; set; }
 
+        [Display(Name = "Estimate In Hours")]
         [Range(0, 24, ErrorMessage = "Value must be between 0 and 24.")]
         public decimal Estimate { get; set; } = 0;
 
