@@ -63,11 +63,11 @@ namespace task_management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateMyTaskDto task)
+        public async Task<IActionResult> Create(CreateMyTaskDto taskDto)
         {
             if (ModelState.IsValid)
             {
-                await _taskService.CreateTask(task);
+                await _taskService.CreateTask(taskDto);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -80,10 +80,10 @@ namespace task_management.Controllers
                 }
             }
 
-            ViewData["ProjectId"] = new SelectList(_context.Set<Project>(), "Id", "Name", task.ProjectId);
-            ViewData["StoryId"] = new SelectList(_context.Set<Story>(), "Id", "Name", task.StoryId);
+            ViewData["ProjectId"] = new SelectList(_context.Set<Project>(), "Id", "Name", taskDto.ProjectId);
+            ViewData["StoryId"] = new SelectList(_context.Set<Story>(), "Id", "Name", taskDto.StoryId);
 
-            return View(task);
+            return View(taskDto);
         }
 
         // GET: MyTasks/Edit/5
@@ -109,9 +109,9 @@ namespace task_management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Title,Description,DueDate,estimate,ProjectId,StoryId,Id")] MyTask task)
+        public async Task<IActionResult> Edit(int id, UpdateMyTaskDto taskDto)
         {
-            if (id != task.Id)
+            if (id <= 0)
             {
                 return NotFound();
             }
@@ -120,12 +120,11 @@ namespace task_management.Controllers
             {
                 try
                 {
-                    _context.Update(task);
-                    await _context.SaveChangesAsync();
+                    await _taskService.UpdateTask(id, taskDto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TaskExists(task.Id))
+                    if (!TaskExists(id))
                     {
                         return NotFound();
                     }
@@ -136,9 +135,11 @@ namespace task_management.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProjectId"] = new SelectList(_context.Set<Project>(), "Id", "Name", task.ProjectId);
-            ViewData["StoryId"] = new SelectList(_context.Set<Story>(), "Id", "Name", task.StoryId);
-            return View(task);
+
+            ViewData["ProjectId"] = new SelectList(_context.Set<Project>(), "Id", "Name", taskDto.ProjectId);
+            ViewData["StoryId"] = new SelectList(_context.Set<Story>(), "Id", "Name", taskDto.StoryId);
+
+            return View(taskDto);
         }
 
         // GET: MyTasks/Delete/5

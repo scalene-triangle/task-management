@@ -6,5 +6,6 @@ namespace task_management.Services
     public interface IMyTaskService
     {
         Task<ResponseMyTaskDto> CreateTask(CreateMyTaskDto dto);
+        Task<ResponseMyTaskDto> UpdateTask(int taskId, UpdateMyTaskDto dto);
     }
 }
